@@ -22,7 +22,8 @@ missed a lot of interesting web stuff in the last years while being focused on d
 The solution doesn't have tests and runs in dev mode. 
 For prod, it would need a different Dockerfile to `npm build` static files and maybe serve them with nginx).
 From a product point of view, this barely works. It was a nice journey to get here nonetheless
-and it's a good starting point for further development (e.g validating things, a modal, displaying (ajax) errors, etc)
+and it's a good starting point for further development 
+(e.g validating things, a modal, displaying (ajax) errors, only generating uuids in the backend, etc).
 
 ## Usage
 
@@ -33,6 +34,11 @@ docker-compose up -d --build
 Open http://localhost:3000 in the browser.
 
 You can also use curl to add, list and delete notes: GET, POST and DELETE are exposed on localhost:8080 (route /)
+
+Then, when you're done with it,
+```bash
+docker-compose stop
+```
 
 ## Tests
 

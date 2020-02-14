@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -12,6 +13,7 @@ import (
 
 // InMemoryStorage implements the Storage and stores data in memory
 type InMemoryStorage struct {
+	sync.RWMutex
 	notes map[NoteID]*Note
 }
 
@@ -23,6 +25,9 @@ func NewInMemoryStorage() *InMemoryStorage {
 }
 
 func (s *InMemoryStorage) Create(title, content string) (note *Note, err error) {
+	s.Lock()
+	defer s.Unlock()
+
 	note = &Note{
 		ID:           NoteID{uuid.NewV4()},
 		Title:        title,
@@ -36,6 +41,9 @@ func (s *InMemoryStorage) Create(title, content string) (note *Note, err error) 
 }
 
 func (s *InMemoryStorage) List() ([]*Note, error) {
+	s.Lock()
+	defer s.Unlock()
+
 	var result []*Note
 
 	for _, note := range s.notes {
@@ -51,6 +59,9 @@ func (s *InMemoryStorage) List() ([]*Note, error) {
 }
 
 func (s *InMemoryStorage) Retrieve(ID NoteID) (*Note, error) {
+	s.Lock()
+	defer s.Unlock()
+
 	note, exists := s.notes[ID]
 	if !exists {
 		return nil, ErrNoteDoesntExist
@@ -60,6 +71,9 @@ func (s *InMemoryStorage) Retrieve(ID NoteID) (*Note, error) {
 }
 
 func (s *InMemoryStorage) Delete(IDs []NoteID) error {
+	s.Lock()
+	defer s.Unlock()
+
 	var missingIds []NoteID
 
 	for _, id := range IDs {
