@@ -39,6 +39,12 @@ Then, when you're done with it,
 ```bash
 docker-compose stop
 ```
+Dockerhub will build images every time the `master` branch gets tagged with `/^v([0-9.]+)$/`,
+hence you can already use the first built images:
+```bash
+docker pull florinutz/loopline:front-0.1
+docker pull florinutz/loopline:back-0.1
+```
 
 ## Tests
 
