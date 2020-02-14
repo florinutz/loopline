@@ -43,8 +43,8 @@ func TestService_List(t *testing.T) {
 		t.Fatalf("List failed: %s", err)
 	}
 
-	if !reflect.DeepEqual([]*pkg.Note{note1, note2}, list) &&
-		!reflect.DeepEqual([]*pkg.Note{note2, note1}, list) {
-		t.Error("Wrong List retrieved")
+	// this also tests the order, which should be desc by time
+	if !reflect.DeepEqual([]*pkg.Note{note2, note1}, list) {
+		t.Error("there's something wrong with the list")
 	}
 }

@@ -31,6 +31,9 @@ func TestController_E2E(t *testing.T) {
 	t.Run("create 1", s.create([]Note{{Title: "", Content: ""}}))
 	t.Run("check 1 item", s.list(1))
 
+	if len(s.listNotes) == 0 {
+		t.Fatalf("missing list nodes. stopping")
+	}
 	if s.listNotes[0].ID.UUID != s.createdIDs[0] {
 		t.Errorf("created ID not found in the list")
 	}
@@ -43,7 +46,7 @@ func TestController_E2E(t *testing.T) {
 	t.Run("list is empty again", s.list(0))
 }
 
-func (s *testServer) list(count int) func(t *testing.T) {
+func (s *testServer) list(expectedCount int) func(t *testing.T) {
 	return func(t *testing.T) {
 		req, err := http.NewRequest(http.MethodGet, s.URL, nil)
 		if err != nil {
@@ -64,8 +67,8 @@ func (s *testServer) list(count int) func(t *testing.T) {
 			t.Errorf("error unmarshaling response json")
 		}
 
-		if len(s.listNotes) != count {
-			t.Errorf("list count is wrong (expected %d, got %d items)", count, len(s.listNotes))
+		if len(s.listNotes) != expectedCount {
+			t.Errorf("list count is wrong (expected %d, got %d items)", expectedCount, len(s.listNotes))
 		}
 	}
 }

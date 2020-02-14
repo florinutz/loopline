@@ -96,8 +96,7 @@ func (c *Controller) Delete(res http.ResponseWriter, req *http.Request) {
 
 	err := json.NewDecoder(req.Body).Decode(&inputData)
 	if err != nil {
-		respondError(res, http.StatusBadRequest, "the request "+
-			"should contain ids to delete under the key *ids*")
+		respondError(res, http.StatusBadRequest, "can't handle incoming request")
 		return
 	}
 

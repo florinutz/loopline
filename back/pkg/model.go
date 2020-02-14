@@ -7,10 +7,10 @@ import (
 )
 
 type Note struct {
-	ID           NoteID `json:"id,omitempty"`
-	Title        string `json:"title,omitempty"`
-	Content      string `json:"content,omitempty"`
-	CreationDate time.Time
+	ID           NoteID    `json:"id,omitempty"`
+	Title        string    `json:"title,omitempty"`
+	Content      string    `json:"content,omitempty"`
+	CreationDate time.Time `json:"created_date,omitempty"`
 }
 
 type NoteID struct {

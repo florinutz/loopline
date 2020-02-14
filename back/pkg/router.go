@@ -9,11 +9,13 @@ import (
 func (c *Controller) generateRouter(middlewares ...mux.MiddlewareFunc) *mux.Router {
 	router := mux.NewRouter()
 
-	sub := router.PathPrefix("/").Headers("Content-Type", "application/json").Subrouter()
+	// router.Use(mux.CORSMethodMiddleware(router))
 
 	for _, mid := range middlewares {
 		router.Use(mid)
 	}
+
+	sub := router.PathPrefix("/").Subrouter()
 
 	sub.HandleFunc("/", c.List).Methods(http.MethodGet)
 	sub.HandleFunc("/", c.Create).Methods(http.MethodPost)

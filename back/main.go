@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	. "back/pkg"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 var cliConfig = struct {
@@ -20,14 +24,23 @@ func init() {
 
 func main() {
 	api := NewController(*NewInMemoryStorage())
-	api.Router.Use(loggingMiddleware)
-	fmt.Printf("listening on %s\n", cliConfig.listenAddr)
-	log.Println(http.ListenAndServe(cliConfig.listenAddr, api.Router))
+	fmt.Printf("listening on %s\n\n", cliConfig.listenAddr)
+	log.Println(http.ListenAndServe(cliConfig.listenAddr, decorateHandler(api.Router)))
 }
 
-func loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[%s] %s\n", r.Method, r.RequestURI)
-		next.ServeHTTP(w, r)
-	})
+func decorateHandler(router *mux.Router) http.Handler {
+	// add apache combined logging
+	handler := handlers.CombinedLoggingHandler(os.Stdout, router)
+
+	// allow all CORS
+	handler = handlers.CORS(
+		handlers.AllowedHeaders([]string{"*"}),
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "OPTIONS"}),
+	)(handler)
+
+	// recover panics
+	handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
+
+	return handler
 }

@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -40,6 +41,11 @@ func (s *InMemoryStorage) List() ([]*Note, error) {
 	for _, note := range s.notes {
 		result = append(result, note)
 	}
+
+	// order by date desc
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].CreationDate.After(result[j].CreationDate)
+	})
 
 	return result, nil
 }
