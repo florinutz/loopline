@@ -16,9 +16,9 @@ type Controller struct {
 	Router *mux.Router
 }
 
-func NewController(notebookService InMemoryStorage) *Controller {
+func NewController(notebookService InMemoryStorage, middlewares ...mux.MiddlewareFunc) *Controller {
 	c := &Controller{Storage: &notebookService}
-	c.Router = c.generateRouter()
+	c.Router = c.generateRouter(middlewares...)
 	return c
 }
 
